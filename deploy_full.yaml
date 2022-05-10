@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: production
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: docker.io/nextcloud/full
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: host-vol
+            mountPath: /var/www/html
+          - name: nextcloud-cron-config
+            mountPath: /var/spool/cron/crontabs
+          - name: cus-php-config
+            mountPath: /usr/local/etc/php/conf.d/cus-php-config.ini
+            subPath: cus-php-config.ini
+        env:
+        - name: "PHP_MEMORY_LIMIT"
+          value: "-1"
+      volumes:
+        - name: host-vol
+          hostPath:
+            path: /opt/nextcloud
+            type: DirectoryOrCreate
+        - name: nextcloud-cron-config
+          configMap:
+            defaultMode: 420
+            items:
+            - key: www-data
+              path: www-data
+            name: nextcloud-cron-config
+        - name: cus-php-config
+          configMap:
+            defaultMode: 420
+            items:
+            - key: cus-php-config.ini
+              path: cus-php-config.ini
+            name: cus-php-config
+      nodeSelector:
+        region: cn

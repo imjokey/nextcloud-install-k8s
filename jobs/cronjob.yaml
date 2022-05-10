@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: preview-job-all
+  namespace: production
+spec:
+  schedule: "* 3 * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 14400
+      template:
+        spec:
+          securityContext:
+            runAsUser: 33
+          containers:
+          - name: preview-job-all
+            image: nextcloud
+            command: ["php",  "-f", "/var/www/html/occ", "preview:generate-all", "-vvv"]
+            volumeMounts:
+              - name: host-vol
+                mountPath: /var/www/html
+          volumes:
+            - name: host-vol
+              hostPath:
+                path: /opt/nextcloud
+                type: Directory
+          restartPolicy: Never
+          nodeSelector:
+            region: cn

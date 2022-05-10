@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: preview-generate-all
+  namespace: production
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 33
+      containers:
+      - name: preview-generate-all
+        image: nextcloud
+        command: ["php",  "-f", "/var/www/html/occ", "preview:generate-all", "-vvv"]
+        volumeMounts:
+          - name: host-vol
+            mountPath: /var/www/html
+      volumes:
+        - name: host-vol
+          hostPath:
+            path: /opt/nextcloud
+            type: Directory
+      restartPolicy: Never
+      nodeSelector:
+        region: cn
