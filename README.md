@@ -31,7 +31,7 @@ And copy your custom configs to `/opt/nextcloud/config` directory(the location o
 
 Just run `run.sh` script to build and deploy discourse.
 
-> Certainly,  If you have customer  building requirements,  you could  also customize the build script. 
+> Certainly,  If you have customer  build requirements,  you could  also customize the building script. 
 
 ```sh
 sh run.sh 
