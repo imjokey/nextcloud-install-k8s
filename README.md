@@ -1,4 +1,4 @@
-# Nextcloud-install-k8s
+# nextcloud-install-k8s
 
 Install Nextcloud in Kubernetes.
 
